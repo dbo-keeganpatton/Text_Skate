@@ -20,7 +20,7 @@ def question():
         exit()
 
 
-def start_game():
+def action():
     '''Who starts the game?'''
     if random.choice(attempt) == 'land':
         return True  # Player starts
@@ -28,60 +28,54 @@ def start_game():
         return False  # Computer starts
 
 
-def player_attempt():
-    '''Player attempt action'''
-    if random.choice(attempt) == 'land':
-        return True  # Landed
-    else:
-        return False  # Got a letter
-
-
-def opponent_attempt():
-    '''Computer attempt action'''
-    if random.choice(attempt) == 'land':
-        return True  # Landed
-    else:
-        return False  # Got a letter
-
 
 def play():
-    '''Main game loop'''
+    
     question()
-    
-    player_turn = start_game()
-    if player_turn:
-        print("You start! (1)")
-    else:
-        print("I'll start! (1)")
-    
+
     while len(game_player) < len(letters) and len(game_opponent) < len(letters):
-        if player_turn:
-            #print('Your turn. Set the trick!')
-            input('Press Enter after setting the trick...')
-            if player_attempt():
-                print('Nice, you landed it!')
+
+        player_action = action()
+        cpu_action = action()
+
+        if player_action:
+            input("Set the Trick: (Type Trick)   \n")
+            if player_action:
+                print("Stomped it! \nCPU tries the trick")
+                if cpu_action:
+                    print("CPU Lands your trick")
+                else:
+                    print("CPU gets a letter")
+                    game_opponent.append(letters[len(game_opponent)])
+                    print(f'CPU Score: {game_opponent}')
             else:
-                print('You bailed!.')
-        else:
-            opponent_trick = random.choice(tricks)
-            print(f"My turn. I'll try the trick: {opponent_trick}")
-            if opponent_attempt():
-                print('I landed it! Your turn to try the same trick.')
-                if not player_attempt():
-                    print('You got a letter.')
-                    game_player.append(letters[len(game_opponent)])
-                    print(f"Your score: {''.join(game_opponent)}")
-            else:
-                print("I couldn't land it. Your turn.")
+                print("You bailed")
         
-        # Switch turns
-        player_turn = not player_turn
+        else:
+
+            print("CPU sets the Trick:  \n")
+
+            if cpu_action:
+                print(f"CPU lands a {random.choice(tricks)}")
+                input("( Type trick CPU does to attempt ) ...\n")
+                if player_action:
+                    print("You Landed it")
+                else:
+                    print("You get a letter")
+                    game_player.append(letters[len(game_player)])
+                    print(game_player)
+            else:
+                print("CPU bails trick")
+            
+                        
 
     if len(game_player) == len(letters):
-        print('You lose.')
-    else:
-        print('You win!')
+        print("You Lose")
+        exit()
 
-# Start the game
+    if len(game_opponent) == len(letters):
+        print("You Win!")
+        exit()
+        
+
 play()
-
